@@ -1,0 +1,35 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Pods
+        run: |
+          cd ios
+          pod install
+
+      - name: Build iOS App
+        run: |
+          xcodebuild \
+          -workspace ios/ReactNativeCICD.xcworkspace \
+          -scheme ReactNativeCICD \
+          -sdk iphonesimulator \
+          -configuration Debug \
+          build
